@@ -11,3 +11,59 @@ if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
 fi
 
 # Customize to your needs...
+ 
+# Use direnv
+eval "$(direnv hook /use/local/bin/zsh)"
+
+# Z directory jump util
+. /usr/local/etc/profile.d/z.sh
+
+# autojump
+[ -f /usr/local/etc/profile.d/autojump.sh ] && . /usr/local/etc/profile.d/autojump.sh
+
+# NVM
+export NVM_DIR="$HOME/.nvm"
+
+# This loads nvm
+[ -s "/usr/local/opt/nvm/nvm.sh" ] && . "/usr/local/opt/nvm/nvm.sh"  
+
+# This loads nvm bash_completion
+[ -s "/usr/local/opt/nvm/etc/bash_completion.d/nvm" ] && . "/usr/local/opt/nvm/etc/bash_completion.d/nvm"  
+
+# Call 'nvm use' automatically in a directory with a '.nvmrc' file
+autoload -U add-zsh-hook
+load-nvmrc() {
+  local node_version="$(nvm version)"
+  local nvmrc_path="$(nvm_find_nvmrc)"
+
+  if [ -n "$nvmrc_path" ]; then
+    local nvmrc_node_version=$(nvm version "$(cat "${nvmrc_path}")")
+
+    if [ "$nvmrc_node_version" = "N/A" ]; then
+      nvm install
+    elif [ "$nvmrc_node_version" != "$node_version" ]; then
+      nvm use
+    fi
+  elif [ "$node_version" != "$(nvm version default)" ]; then
+    echo "Reverting to nvm default version"
+    nvm use default
+  fi
+}
+add-zsh-hook chpwd load-nvmrc
+load-nvmrc
+
+# NVM
+export NVM_DIR="$HOME/.nvm"
+[ -s "#{opt_prefix}/nvm.sh" ] && \. "#{opt_prefix}/nvm.sh"  # This loads nvm
+[ -s "#{opt_prefix}/etc/bash_completion.d/nvm" ] && \. "#{opt_prefix}/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
+
+### From homebrew installed zsh-completions
+fpath=(/usr/local/share/zsh-completions $fpath)
+
+alias py='python'
+alias i='invoke'
+
+# Iterm2 shell integration
+test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
+
+umask 077

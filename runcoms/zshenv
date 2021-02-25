@@ -9,3 +9,15 @@
 if [[ ( "$SHLVL" -eq 1 && ! -o LOGIN ) && -s "${ZDOTDIR:-$HOME}/.zprofile" ]]; then
   source "${ZDOTDIR:-$HOME}/.zprofile"
 fi
+
+# Avoid rate limiting while using homebrew
+export HOMEBREW_GITHUB_API_TOKEN="f500fe52e8f9b443af318d503f9745f07f7a8af9"
+
+# Opt out of google analytics
+export HOMEBREW_NO_ANALYTICS=1
+
+# Cookiecutter config location
+export COOKIECUTTER_CONFIG=~/dev/cookiecutters/config.yaml
+
+# Set SSH to use gpg-agent
+export SSH_AUTH_SOCK="${HOME}/.gnupg/S.gpg-agent.ssh"
